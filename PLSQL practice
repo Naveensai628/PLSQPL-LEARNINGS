@@ -1,0 +1,54 @@
+/*
+PLSQL learnings project on 30-05-2022 05:53 PM 
+
+code by Gali Rai Naveen
+
+*/
+
+DECLARE
+
+ C_MANUAL_ID NUMBER := &CC_ID;
+ 
+ --declaring record 
+TYPE EMP_REC IS RECORD (
+C_CODE CUSTOMER.CUST_CODE%TYPE,
+C_NAME customer.cust_name%TYPE,
+C_PHONE customer.phone_no%TYPE
+);
+EMP EMP_REC;
+
+--initializing cursor
+CURSOR FETCH_EMP IS SELECT CUST_CODE,CUST_NAME,PHONE_NO FROM CUSTOMER;
+
+--declaring exception
+MY_INVALID EXCEPTION;
+
+BEGIN
+
+IF c_manual_id <=0 THEN 
+ RAISE MY_INVALID;
+ELSE
+--opening and fetching cursor into record
+OPEN FETCH_EMP;
+LOOP
+FETCH FETCH_EMP INTO EMP ;
+
+--C_CODE := C_CODE +'123';
+EXIT WHEN FETCH_EMP%NOTFOUND;
+DBMS_OUTPUT.put_line('_____________________________________________');
+DBMS_OUTPUT.put_line(C_MANUAL_ID || '--' || 'Cust info :' || EMP.C_CODE || '123 ' || EMP.C_NAME || ' ' || EMP.C_PHONE);
+--DBMS_OUTPUT.put_line('--');
+END LOOP;
+--closing the cursor
+CLOSE FETCH_EMP;
+
+END IF;
+
+--exeption handeling
+EXCEPTION
+ WHEN MY_INVALID THEN
+ DBMS_OUTPUT.put_line('MANUAL ID IS LESS THAN ZERO');
+ WHEN OTHERS THEN
+ DBMS_OUTPUT.put_line('ERROR!');
+END;
+/
